@@ -1,9 +1,9 @@
 name: WorldCup Auto Update
 
-on:
+"on":
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: "0 */6 * * *"
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -28,15 +28,12 @@ jobs:
 
       - name: Generate calendar
         run: |
-          python3 generate_calendar.py
+          python generate_calendar.py
 
       - name: Commit updated calendar
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "2026世界杯赛程_中文北京时间_iPhone_iPad.ics"
-
           git commit -m "Auto update World Cup calendar" || echo "No changes"
-
           git push
