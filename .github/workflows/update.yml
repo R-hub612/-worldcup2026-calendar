@@ -3,7 +3,7 @@ name: WorldCup Auto Update
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'  # 每 6 小时运行一次
 
 jobs:
   update:
@@ -14,10 +14,12 @@ jobs:
 
       - name: Update calendar
         run: |
-          echo "World Cup calendar update"
+          python3 generate_calendar.py
 
       - name: Commit changes
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add 2026世界杯赛程_中文北京时间_iPhone_iPad.ics
+          git commit -m "Update World Cup calendar"
+          git push
