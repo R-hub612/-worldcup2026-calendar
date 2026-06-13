@@ -8,110 +8,74 @@ SEASON = "2026"
 ICS_FILE = "worldcup2026_schedule.ics"
 
 
-# =========================================================
-# 🔥 48队封闭世界模型（核心稳定层）
-# =========================================================
 TEAM_DB = {
-    "mexico": {"cn": "墨西哥", "code": "MX", "emoji": "🇲🇽"},
-    "south africa": {"cn": "南非", "code": "RSA", "emoji": "🇿🇦"},
-    "korea republic": {"cn": "韩国", "code": "KOR", "emoji": "🇰🇷"},
-    "south korea": {"cn": "韩国", "code": "KOR", "emoji": "🇰🇷"},
-    "czechia": {"cn": "捷克", "code": "CZE", "emoji": "🇨🇿"},
-    "czech republic": {"cn": "捷克", "code": "CZE", "emoji": "🇨🇿"},
-
-    "canada": {"cn": "加拿大", "code": "CAN", "emoji": "🇨🇦"},
-    "bosnia and herzegovina": {"cn": "波黑", "code": "BIH", "emoji": "🇧🇦"},
-    "bosnia-herzegovina": {"cn": "波黑", "code": "BIH", "emoji": "🇧🇦"},
-    "qatar": {"cn": "卡塔尔", "code": "QAT", "emoji": "🇶🇦"},
-    "switzerland": {"cn": "瑞士", "code": "SUI", "emoji": "🇨🇭"},
-
-    "brazil": {"cn": "巴西", "code": "BRA", "emoji": "🇧🇷"},
-    "morocco": {"cn": "摩洛哥", "code": "MAR", "emoji": "🇲🇦"},
-    "haiti": {"cn": "海地", "code": "HTI", "emoji": "🇭🇹"},
-    "scotland": {"cn": "苏格兰", "code": "SCO", "emoji": "🏴"},
-
-    "united states": {"cn": "美国", "code": "USA", "emoji": "🇺🇸"},
-    "usa": {"cn": "美国", "code": "USA", "emoji": "🇺🇸"},
-    "paraguay": {"cn": "巴拉圭", "code": "PAR", "emoji": "🇵🇾"},
-    "australia": {"cn": "澳大利亚", "code": "AUS", "emoji": "🇦🇺"},
-    "turkey": {"cn": "土耳其", "code": "TUR", "emoji": "🇹🇷"},
-
-    "germany": {"cn": "德国", "code": "GER", "emoji": "🇩🇪"},
-    "curacao": {"cn": "库拉索", "code": "CUW", "emoji": "🇨🇼"},
-    "cote d'ivoire": {"cn": "科特迪瓦", "code": "CIV", "emoji": "🇨🇮"},
-    "côte d’ivoire": {"cn": "科特迪瓦", "code": "CIV", "emoji": "🇨🇮"},
-    "ecuador": {"cn": "厄瓜多尔", "code": "ECU", "emoji": "🇪🇨"},
-
-    "netherlands": {"cn": "荷兰", "code": "NED", "emoji": "🇳🇱"},
-    "japan": {"cn": "日本", "code": "JPN", "emoji": "🇯🇵"},
-    "sweden": {"cn": "瑞典", "code": "SWE", "emoji": "🇸🇪"},
-    "tunisia": {"cn": "突尼斯", "code": "TUN", "emoji": "🇹🇳"},
-
-    "belgium": {"cn": "比利时", "code": "BEL", "emoji": "🇧🇪"},
-    "egypt": {"cn": "埃及", "code": "EGY", "emoji": "🇪🇬"},
-    "iran": {"cn": "伊朗", "code": "IRN", "emoji": "🇮🇷"},
-    "new zealand": {"cn": "新西兰", "code": "NZL", "emoji": "🇳🇿"},
-
-    "spain": {"cn": "西班牙", "code": "ESP", "emoji": "🇪🇸"},
-    "cape verde": {"cn": "佛得角", "code": "CPV", "emoji": "🇨🇻"},
-    "saudi arabia": {"cn": "沙特阿拉伯", "code": "KSA", "emoji": "🇸🇦"},
-    "uruguay": {"cn": "乌拉圭", "code": "URU", "emoji": "🇺🇾"},
-
-    "france": {"cn": "法国", "code": "FRA", "emoji": "🇫🇷"},
-    "senegal": {"cn": "塞内加尔", "code": "SEN", "emoji": "🇸🇳"},
-    "iraq": {"cn": "伊拉克", "code": "IRQ", "emoji": "🇮🇶"},
-    "norway": {"cn": "挪威", "code": "NOR", "emoji": "🇳🇴"},
-
-    "argentina": {"cn": "阿根廷", "code": "ARG", "emoji": "🇦🇷"},
-    "algeria": {"cn": "阿尔及利亚", "code": "DZA", "emoji": "🇩🇿"},
-    "austria": {"cn": "奥地利", "code": "AUT", "emoji": "🇦🇹"},
-    "jordan": {"cn": "约旦", "code": "JOR", "emoji": "🇯🇴"},
-
-    "portugal": {"cn": "葡萄牙", "code": "POR", "emoji": "🇵🇹"},
-    "dr congo": {"cn": "刚果（金）", "code": "COD", "emoji": "🇨🇩"},
-    "uzbekistan": {"cn": "乌兹别克斯坦", "code": "UZB", "emoji": "🇺🇿"},
-    "colombia": {"cn": "哥伦比亚", "code": "COL", "emoji": "🇨🇴"},
-
-    "england": {"cn": "英格兰", "code": "ENG", "emoji": "🏴"},
-    "croatia": {"cn": "克罗地亚", "code": "CRO", "emoji": "🇭🇷"},
-    "ghana": {"cn": "加纳", "code": "GHA", "emoji": "🇬🇭"},
-    "panama": {"cn": "巴拿马", "code": "PAN", "emoji": "🇵🇦"},
+    "mexico": ("墨西哥", "🇲🇽"),
+    "south africa": ("南非", "🇿🇦"),
+    "korea republic": ("韩国", "🇰🇷"),
+    "south korea": ("韩国", "🇰🇷"),
+    "czech republic": ("捷克", "🇨🇿"),
+    "czechia": ("捷克", "🇨🇿"),
+    "canada": ("加拿大", "🇨🇦"),
+    "bosnia and herzegovina": ("波黑", "🇧🇦"),
+    "qatar": ("卡塔尔", "🇶🇦"),
+    "switzerland": ("瑞士", "🇨🇭"),
+    "brazil": ("巴西", "🇧🇷"),
+    "morocco": ("摩洛哥", "🇲🇦"),
+    "haiti": ("海地", "🇭🇹"),
+    "scotland": ("苏格兰", "🏴"),
+    "united states": ("美国", "🇺🇸"),
+    "usa": ("美国", "🇺🇸"),
+    "paraguay": ("巴拉圭", "🇵🇾"),
+    "australia": ("澳大利亚", "🇦🇺"),
+    "turkey": ("土耳其", "🇹🇷"),
+    "germany": ("德国", "🇩🇪"),
+    "curacao": ("库拉索", "🇨🇼"),
+    "cote d'ivoire": ("科特迪瓦", "🇨🇮"),
+    "côte d’ivoire": ("科特迪瓦", "🇨🇮"),
+    "ecuador": ("厄瓜多尔", "🇪🇨"),
+    "netherlands": ("荷兰", "🇳🇱"),
+    "japan": ("日本", "🇯🇵"),
+    "sweden": ("瑞典", "🇸🇪"),
+    "tunisia": ("突尼斯", "🇹🇳"),
+    "belgium": ("比利时", "🇧🇪"),
+    "egypt": ("埃及", "🇪🇬"),
+    "iran": ("伊朗", "🇮🇷"),
+    "new zealand": ("新西兰", "🇳🇿"),
+    "spain": ("西班牙", "🇪🇸"),
+    "cape verde": ("佛得角", "🇨🇻"),
+    "saudi arabia": ("沙特阿拉伯", "🇸🇦"),
+    "uruguay": ("乌拉圭", "🇺🇾"),
+    "france": ("法国", "🇫🇷"),
+    "senegal": ("塞内加尔", "🇸🇳"),
+    "iraq": ("伊拉克", "🇮🇶"),
+    "norway": ("挪威", "🇳🇴"),
+    "argentina": ("阿根廷", "🇦🇷"),
+    "algeria": ("阿尔及利亚", "🇩🇿"),
+    "austria": ("奥地利", "🇦🇹"),
+    "jordan": ("约旦", "🇯🇴"),
+    "portugal": ("葡萄牙", "🇵🇹"),
+    "dr congo": ("刚果（金）", "🇨🇩"),
+    "uzbekistan": ("乌兹别克斯坦", "🇺🇿"),
+    "colombia": ("哥伦比亚", "🇨🇴"),
+    "england": ("英格兰", "🏴"),
+    "croatia": ("克罗地亚", "🇭🇷"),
+    "ghana": ("加纳", "🇬🇭"),
+    "panama": ("巴拿马", "🇵🇦"),
 }
 
 
-# =========================================================
-# normalize（关键稳定层）
-# =========================================================
-def norm(name):
-    if not name:
-        return ""
-    return name.strip().lower()
+def norm(n):
+    return (n or "").strip().lower()
 
 
-def team(name):
-    n = norm(name)
-    if n in TEAM_DB:
-        t = TEAM_DB[n]
-        return f"{t['emoji']} {t['cn']}"
-    return f"🏳️ {name}"
+def team(n):
+    k = norm(n)
+    if k in TEAM_DB:
+        cn, flag = TEAM_DB[k]
+        return f"{flag} {cn}"
+    return n
 
 
-# =========================================================
-# 状态（严格 API 驱动）
-# =========================================================
-def status(e):
-    s = (e.get("strStatus") or "").upper()
-
-    if s == "FT":
-        return "FT"
-    if s in ["1H", "2H", "LIVE", "IN PLAY"]:
-        return "LIVE"
-    return "NS"
-
-
-# =========================================================
-# 比分
-# =========================================================
 def score(e):
     h = e.get("intHomeScore")
     a = e.get("intAwayScore")
@@ -120,27 +84,27 @@ def score(e):
     return f"{h}-{a}"
 
 
-# =========================================================
-# 标题（最终规则）
-# =========================================================
+def status(e):
+    s = (e.get("strStatus") or "").upper()
+    if s in ["1H", "2H", "LIVE"]:
+        return "LIVE"
+    if s == "FT":
+        return "FT"
+    return "NS"
+
+
 def title(e):
     home = team(e.get("strHomeTeam"))
     away = team(e.get("strAwayTeam"))
     sc = score(e)
 
-    base = f"{home} vs {away}"
-    if sc:
-        base = f"{home} {sc} {away}"
+    line = f"{home} vs {away}" if not sc else f"{home} {sc} {away}"
 
     if status(e) == "LIVE":
-        return "▶️ 比赛中\n" + base
+        return "▶️ 比赛中\n" + line
+    return line
 
-    return base
 
-
-# =========================================================
-# 时间
-# =========================================================
 def parse_time(e):
     if not e.get("dateEvent"):
         return None
@@ -149,18 +113,12 @@ def parse_time(e):
     return dt.replace(tzinfo=timezone.utc)
 
 
-# =========================================================
-# API（单源原则！！！）
-# =========================================================
 def fetch():
     url = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/eventsseason.php"
     r = requests.get(url, params={"id": LEAGUE_ID, "s": SEASON})
     return r.json().get("events") or []
 
 
-# =========================================================
-# ICS
-# =========================================================
 def build(events):
     cal = Calendar()
 
@@ -173,7 +131,6 @@ def build(events):
         ev.name = title(e)
         ev.begin = start
         ev.end = start + timedelta(hours=2)
-
         ev.location = f"{e.get('strCountry','')} · {e.get('strCity','')} · {e.get('strVenue','')}"
 
         if e.get("idEvent"):
@@ -186,8 +143,6 @@ def build(events):
 
 def main():
     events = fetch()
-    print("TOTAL:", len(events))
-
     cal = build(events)
 
     with open(ICS_FILE, "w", encoding="utf-8") as f:
