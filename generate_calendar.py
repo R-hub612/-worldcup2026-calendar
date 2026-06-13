@@ -64,16 +64,33 @@ TEAM_DB = {
 }
 
 
+# 🔥 仅补这两个 alias（最终补丁）
+ALIAS = {
+    "ivory coast": "cote d'ivoire",
+    "cote d'ivoire": "cote d'ivoire",
+    "côte d’ivoire": "cote d'ivoire",
+
+    "curacao": "curacao",
+    "curaçao": "curacao",
+}
+
+
 def norm(n):
     return (n or "").strip().lower()
 
 
-def team(n):
-    k = norm(n)
-    if k in TEAM_DB:
-        cn, flag = TEAM_DB[k]
+def resolve_team(name):
+    n = norm(name)
+
+    # alias层
+    n = ALIAS.get(n, n)
+
+    # 标准库
+    if n in TEAM_DB:
+        cn, flag = TEAM_DB[n]
         return f"{flag} {cn}"
-    return n
+
+    return name
 
 
 def score(e):
@@ -94,15 +111,17 @@ def status(e):
 
 
 def title(e):
-    home = team(e.get("strHomeTeam"))
-    away = team(e.get("strAwayTeam"))
+    home = resolve_team(e.get("strHomeTeam"))
+    away = resolve_team(e.get("strAwayTeam"))
+
     sc = score(e)
 
-    line = f"{home} vs {away}" if not sc else f"{home} {sc} {away}"
+    base = f"{home} vs {away}" if not sc else f"{home} {sc} {away}"
 
     if status(e) == "LIVE":
-        return "▶️ 比赛中\n" + line
-    return line
+        return "▶️ 比赛中\n" + base
+
+    return base
 
 
 def parse_time(e):
@@ -131,6 +150,7 @@ def build(events):
         ev.name = title(e)
         ev.begin = start
         ev.end = start + timedelta(hours=2)
+
         ev.location = f"{e.get('strCountry','')} · {e.get('strCity','')} · {e.get('strVenue','')}"
 
         if e.get("idEvent"):
