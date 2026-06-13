@@ -3,17 +3,18 @@ import requests
 from ics import Calendar, Event
 from datetime import datetime, timedelta
 
+# ======================
+# API KEY（必须来自环境变量）
+# ======================
 API_KEY = os.environ["API_KEY"]
-
 BASE_URL = "https://v3.football.api-sports.io/fixtures"
 
 # ======================
-# 48队（稳定映射）
+# 48队基础映射（最小稳定版）
 # ======================
 COUNTRIES = {
     "Mexico": ("墨西哥", "MX"),
     "United States": ("美国", "US"),
-    "USA": ("美国", "US"),
     "Spain": ("西班牙", "ES"),
     "Brazil": ("巴西", "BR"),
     "France": ("法国", "FR"),
@@ -33,23 +34,9 @@ COUNTRIES = {
     "Uruguay": ("乌拉圭", "UY"),
     "Croatia": ("克罗地亚", "HR"),
     "Ecuador": ("厄瓜多尔", "EC"),
-    "USA": ("美国", "US"),
     "Saudi Arabia": ("沙特阿拉伯", "SA"),
     "Australia": ("澳大利亚", "AU"),
     "Tunisia": ("突尼斯", "TN"),
-    "Poland": ("波兰", "PL"),
-    "Serbia": ("塞尔维亚", "RS"),
-    "Ghana": ("加纳", "GH"),
-    "Cameroon": ("喀麦隆", "CM"),
-    "Senegal": ("塞内加尔", "SN"),
-    "Iran": ("伊朗", "IR"),
-}
-
-ALIASES = {
-    "Ivory Coast": "Côte d'Ivoire",
-    "Cote d'Ivoire": "Côte d'Ivoire",
-    "South Korea": "Korea Republic",
-    "USA": "United States",
 }
 
 def emoji(code):
@@ -57,50 +44,70 @@ def emoji(code):
         return ""
     return chr(ord(code[0]) + 127397) + chr(ord(code[1]) + 127397)
 
-def normalize_team(name):
-    return ALIASES.get(name, name)
-
 def team(name):
-    name = normalize_team(name)
     cn, code = COUNTRIES.get(name, (name, ""))
     return f"{emoji(code)} {cn}"
 
+# ======================
+# API 拉取（修复关键）
+# ======================
 def fetch():
-    headers = {"x-apisports-key": API_KEY}
+    headers = {
+        "x-apisports-key": API_KEY
+    }
 
-    r = requests.get(BASE_URL, headers=headers, params={"season": 2026})
+    r = requests.get(
+        BASE_URL,
+        headers=headers,
+        params={"season": 2026}
+    )
 
     data = r.json().get("response", [])
 
     return data
 
+# ======================
+# 时间解析
+# ======================
 def parse_time(item):
     return datetime.fromisoformat(
         item["fixture"]["date"].replace("Z", "+00:00")
     )
 
-def status(item):
+# ======================
+# 状态（最稳定版本）
+# ======================
+def get_status(item):
     return item["fixture"]["status"]["short"]
 
+# ======================
+# 构建 ICS（防空版本）
+# ======================
 def build(data):
     cal = Calendar()
 
     for item in data:
+
+        # 防空保护
         if not item.get("teams"):
             continue
 
-        home = team(item["teams"]["home"]["name"])
-        away = team(item["teams"]["away"]["name"])
+        home = item["teams"]["home"]["name"]
+        away = item["teams"]["away"]["name"]
 
-        st = status(item)
+        home_t = team(home)
+        away_t = team(away)
+
+        status = get_status(item)
         goals = item.get("goals", {})
 
-        if st in ["FT"]:
-            title = f"{home} {goals.get('home','')} - {goals.get('away','')} {away}"
-        elif st in ["1H", "2H", "LIVE", "HT"]:
-            title = f"🔴 比赛中 {home} vs {away}"
+        # 状态逻辑
+        if status == "FT":
+            title = f"{home_t} {goals.get('home','')} - {goals.get('away','')} {away_t}"
+        elif status in ["1H", "2H", "HT", "LIVE"]:
+            title = f"🔴 比赛中 {home_t} vs {away_t}"
         else:
-            title = f"{home} vs {away}"
+            title = f"{home_t} vs {away_t}"
 
         ev = Event()
         ev.name = title
@@ -112,8 +119,14 @@ def build(data):
 
     return cal
 
+# ======================
+# main
+# ======================
 def main():
     data = fetch()
+
+    print("TOTAL:", len(data))  # 调试用
+
     cal = build(data)
 
     with open("worldcup2026.ics", "w", encoding="utf-8") as f:
