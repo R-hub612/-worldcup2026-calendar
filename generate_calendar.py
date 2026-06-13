@@ -9,7 +9,7 @@ ICS_FILE = "worldcup2026_schedule.ics"
 
 
 # =========================
-# 国家映射（完整稳定版）
+# 国家（核心修复：补全 + fallback）
 # =========================
 COUNTRIES = {
     "Mexico": ("墨西哥", "MX"),
@@ -42,10 +42,11 @@ COUNTRIES = {
     "Australia": ("澳大利亚", "AU"),
     "Saudi Arabia": ("沙特", "SA"),
     "Qatar": ("卡塔尔", "QA"),
-    "Côte d'Ivoire": ("科特迪瓦", "CI"),
-    "DR Congo": ("刚果（金）", "CD"),
-    "Curaçao": ("库拉索", "CW"),
-    "Bosnia and Herzegovina": ("波黑", "BA"),
+    "Czech Republic": ("捷克", "CZ"),
+    "Haiti": ("海地", "HT"),
+    "Scotland": ("苏格兰", "GB"),
+    "Paraguay": ("巴拉圭", "PY"),
+    "Cape Verde": ("佛得角", "CV"),
 }
 
 
@@ -54,7 +55,6 @@ COUNTRIES = {
 # =========================
 CITIES = {
     "Los Angeles": "洛杉矶",
-    "Inglewood": "洛杉矶",
     "New York": "纽约",
     "Dallas": "达拉斯",
     "Miami": "迈阿密",
@@ -63,7 +63,6 @@ CITIES = {
     "Atlanta": "亚特兰大",
     "Boston": "波士顿",
 }
-
 
 HOST_COUNTRIES = {
     "United States": "美国",
@@ -74,27 +73,30 @@ HOST_COUNTRIES = {
 
 
 # =========================
-# emoji 国旗
+# emoji（安全版）
 # =========================
 def emoji(code):
-    if not code:
+    if not code or len(code) < 2:
         return ""
-    code = code[:2].upper()
-    return chr(ord(code[0]) + 127397) + chr(ord(code[1]) + 127397)
+    return chr(ord(code[0].upper()) + 127397) + chr(ord(code[1].upper()) + 127397)
 
 
 # =========================
-# 队伍
+# 队伍（关键修复 fallback）
 # =========================
 def team(name):
     if not name:
         return "待定"
+
     cn, code = COUNTRIES.get(name, (name, ""))
-    return f"{emoji(code)} {cn}"
+    flag = emoji(code)
+
+    # 如果没中文映射 → 直接用英文（避免空/错乱）
+    return f"{flag} {cn}" if cn else name
 
 
 # =========================
-# 组别（修复不会变1问题）
+# 组别（修复稳定）
 # =========================
 def stage(e):
     g = e.get("strGroup") or e.get("strRound") or e.get("strStage") or ""
@@ -129,7 +131,7 @@ def score(e):
 
 
 # =========================
-# 状态（V5统一核心）
+# 状态（彻底修复）
 # =========================
 def match_status(e):
     status = (e.get("strStatus") or "").lower()
@@ -137,10 +139,7 @@ def match_status(e):
     if status in ["ft", "finished", "match finished"]:
         return "finished"
 
-    if any(x in status for x in [
-        "live", "in progress", "1st half",
-        "2nd half", "halftime", "extra time"
-    ]):
+    if "live" in status or "in progress" in status:
         return "live"
 
     return "not_started"
@@ -156,28 +155,28 @@ def title(e):
     s = score(e)
     st = stage(e)
 
-    line = f"{home} vs {away}"
-
     if s:
         line = f"{home} {s} {away}"
+    else:
+        line = f"{home} vs {away}"
 
     if st:
         line += f" ｜{st}"
 
-    if match_status(e) != "finished":
+    # 关键修复：只有进行中才显示比赛中
+    if match_status(e) == "live":
         return "比赛中\n" + line
 
     return line
 
 
 # =========================
-# 场馆（修复你|问题）
+# 场馆
 # =========================
 def location(e):
     venue = e.get("strVenue") or ""
     city = CITIES.get(e.get("strCity"), e.get("strCity") or "")
     country = HOST_COUNTRIES.get(e.get("strCountry"), e.get("strCountry") or "")
-
     return f"{country} · {city} · {venue}"
 
 
@@ -190,12 +189,11 @@ def parse_time(e):
 
     t = (e.get("strTime") or "00:00:00")[:8]
     dt = datetime.strptime(f"{e['dateEvent']} {t}", "%Y-%m-%d %H:%M:%S")
-
     return dt.replace(tzinfo=timezone.utc)
 
 
 # =========================
-# 🔥 V5关键：完整赛程（解决只到16号）
+# API（修复：完整赛程）
 # =========================
 def fetch_all():
     url = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}"
@@ -212,20 +210,20 @@ def fetch_all():
         r = requests.get(url + ep)
         data = r.json()
 
-        for k in ["events", "event"]:
-            if data.get(k):
-                all_events.extend(data[k])
+        if data.get("events"):
+            all_events += data["events"]
 
     # 去重
     seen = set()
-    unique = []
+    result = []
+
     for e in all_events:
         eid = e.get("idEvent")
         if eid and eid not in seen:
             seen.add(eid)
-            unique.append(e)
+            result.append(e)
 
-    return unique
+    return result
 
 
 # =========================
@@ -258,8 +256,7 @@ def build(events):
 # =========================
 def main():
     events = fetch_all()
-
-    print("TOTAL EVENTS:", len(events))
+    print("TOTAL:", len(events))
 
     cal = build(events)
 
